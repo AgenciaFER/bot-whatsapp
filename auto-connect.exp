@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+
+# Script expect para conectar ao VPS automaticamente
+set timeout 10
+set password ",.DAg,poGVEAfMcc-9pD"
+set host "147.79.83.63"
+
+# Conectar ao VPS
+spawn ssh root@$host
+
+# Aguardar prompt de senha
+expect "password:"
+send "$password\r"
+
+# Aguardar shell
+expect "# "
+
+# Executar diagnóstico
+send "echo '=== DIAGNÓSTICO VPS ==='\r"
+expect "# "
+
+send "echo '1. IP Público:' && curl -s ifconfig.me && echo\r"
+expect "# "
+
+send "echo '2. Docker Containers:' && docker ps --format 'table {{.Names}}\t{{.Status}}'\r"
+expect "# "
+
+send "echo '3. Arquivos Bot:' && ls -la /opt/bot-whatsapp/ | head -5\r"
+expect "# "
+
+send "echo '4. Traefik Config:' && find /opt -name '*traefik*' -type f | head -3\r"
+expect "# "
+
+send "exit\r"
+expect eof
